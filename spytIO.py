@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 SpytLab speckle python lab
-Author: helen labriet & Emmanuel brun
+Author: Helene Labriet & Emmanuel Brun
 Date: April 2018
 """
 
 import EdfFile as edf
 from PIL import Image
 import numpy as np
+
 
 def openImage(filename):
     if filename.endswith('.edf'):
@@ -18,5 +19,7 @@ def openImage(filename):
         imarray = np.array(imarray)
 
     return imarray
+
+def openSeq(filename):
 
 
