@@ -21,5 +21,5 @@ def openImage(filename):
     return imarray
 
 def openSeq(filename):
-
+    print 'open seq'
 
