@@ -55,6 +55,7 @@ def derivativesByOpticalflow(intensityImage,derivative,alpha=0,sig_scale=0):
 
 
 def kottler(dX,dY):
+    print 'kottler'
     i = complex(0, 1)
     Nx, Ny = dX.shape
     dqx = 2 * pi / (Nx)

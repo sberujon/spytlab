@@ -68,6 +68,7 @@ if __name__ == "__main__":
     sampleFilenames = glob.glob(rootfolder + 'Proj/*.edf')
     referencesFilenames.sort()
     sampleFilenames.sort()
+    print ' lalalal '
     print referencesFilenames
     print sampleFilenames
 

@@ -285,6 +285,7 @@ def frankotchellappa(del_f_del_x, del_f_del_y, reflec_pad=True):
     res = ifft2(numerator / denominator)
     res -= np.mean(np.real(res))
 
+
     if reflec_pad:
         return _one_forth_of_array(res)
     else:
