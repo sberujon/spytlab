@@ -39,8 +39,8 @@ def openSeq(filenames):
 
 def saveEdf(data,filename):
 
-    outputEdf = edf.EdfFile( filename+'.edf', access='wb+')
-    outputEdf.WriteImage(data, filename)
+    outputEdf = edf.EdfFile( filename, access='wb+')
+    outputEdf.WriteImage({},data)
 
 
 def savePNG(data,filename,min=0,max=0):
@@ -71,9 +71,3 @@ if __name__ == "__main__":
     print ' lalalal '
     print referencesFilenames
     print sampleFilenames
-
-    Ir = openSeq(referencesFilenames)
-
-    Is = openSeq(sampleFilenames)
-
-    dI = (Is - Ir)

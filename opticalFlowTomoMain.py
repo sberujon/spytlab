@@ -28,11 +28,13 @@ def derivativesByOpticalflow(intensityImage,derivative,alpha=0,sig_scale=0):
 
 
     #building filters
-    sigmaX=sig_scale
-    sigmaY = sig_scale
+
 
     sigmaX = dqx / 1. * np.power(sig_scale,2)
     sigmaY = dqy / 1. * np.power(sig_scale,2)
+    sigmaX=sig_scale
+    sigmaY = sig_scale
+
     g = np.exp(-(((np.power(Qx, 2)) / 2) / sigmaX + ((np.power(Qy, 2)) / 2) / sigmaY))
     beta = 1 - g;
 
@@ -61,6 +63,7 @@ def kottler(dX,dY):
     dqx = 2 * pi / (Nx)
     dqy = 2 * pi / (Ny)
     Qx, Qy = np.meshgrid((np.arange(0, Ny) - floor(Ny / 2) - 1) * dqy, (np.arange(0, Nx) - floor(Nx / 2) - 1) * dqx)
+
 
     ftphi = fftshift(fft2(dX + i * dY)) / (2 * pi  * i * (Qx + i * Qy))
     ftphi[np.isnan(ftphi)] = 0
@@ -96,6 +99,20 @@ def LarkinAnissonSheppard(dx,dy,alpha =0 ,sigma=0):
 
 if __name__ == "__main__":
     print ' Optical Flow Tomo '
+    print 'Test One File'
+    Ir=spytIO.openImage('ref1-1.edf')
+    Is= spytIO.openImage('samp1-1.edf')
+
+    dI = (Is - Ir* (np.mean(Is)/np.mean(Ir)))
+    dx, dy = derivativesByOpticalflow(Ir, dI, alpha=0, sig_scale=0.1)
+    phi = fc.frankotchellappa(dx, dy, False)
+    phi2,phi3=kottler(dx,dy)
+
+    spytIO.saveEdf(dx.real,'output/dx.edf')
+    spytIO.saveEdf(dy.real, 'output/dy.edf')
+    spytIO.saveEdf(phi.real, 'output/phi.edf')
+    spytIO.saveEdf(phi2.real, 'output/phi2.edf')
+    spytIO.saveEdf(phi3.real, 'output/phi3.edf')
 
 
 # open images
