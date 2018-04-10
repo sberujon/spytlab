@@ -1,5 +1,6 @@
 import spytIO
 import glob
+import os
 from numpy.fft import fftshift as fftshift
 from numpy.fft import ifftshift as ifftshift
 from numpy.fft import fft2 as fft2
@@ -12,6 +13,7 @@ import frankoChellappa as fc
 
 import numpy as np
 import corrections as corr
+import fastTomoExperiment as esrfTomo
 
 
 
@@ -95,18 +97,37 @@ def LarkinAnissonSheppard(dx,dy,alpha =0 ,sigma=0):
     return phi
 
 
+def parseESRFTomoFolder(folderpath,outputFolder):
+    print 'ESRFTomoFolder'
+    scanName=os.path.basename(folderpath)
+    parametersScanFilename=folderpath+'/'+scanName+'.xml'
+    print parametersScanFilename
+    tomoExperiment=esrfTomo.FastTomoExperiment(parametersScanFilename,outputFolder)
+    print 'numberFlatField: '
+    print tomoExperiment.numberFlatField
+    tomoExperiment.createAverageWfandDf()
+    tomoExperiment.findCenterOfRotation()
+    print 'Cor Found at '+str(tomoExperiment.cor)
+
+
+
 
 
 
 
 
 if __name__ == "__main__":
+    inputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/Speckle_Foam1_52keV_6um_xss_bis_012_'
+    outputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlow'
+    parseESRFTomoFolder(inputFolder,outputFolder)
+
+
     print ' Optical Flow Tomo '
     print 'Test One File'
     Ir=spytIO.openImage('ref1-1.edf')
     Is= spytIO.openImage('samp1-1.edf')
-    offsett=corr.registerRefAndSample(Ir,Is,1000)
-    print offsett
+    #offsett=corr.registerRefAndSample(Ir,Is,1000)
+    #print offsett
 
 
     sigma=0.9
