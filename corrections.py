@@ -11,7 +11,7 @@ def registerRefAndSample(Ir,Is,precision):
 
     # correction of beam movementn
     shifts, error, phasediff = register_translation(Is, Ir, precision)
-    offset_image = fourier_shift(np.fft.fftn(ref), shifts)
+    offset_image = fourier_shift(np.fft.fftn(Ir), shifts)
     offset_image = np.fft.ifftn(offset_image)
     print ' the register correction shift is ( in pixels ) : '
     print shifts
@@ -54,6 +54,7 @@ def normalization (Im, darkfield):
         stdSlice=np.std(Im, axis =0)
 
         ImCorrected=(Im[slice,:,:]-meanSlice)/stdSlice
+
         ImCorrected=ImCorrected-darkfield
         slicesNormalized.append(ImCorrected)
     Im=slicesNormalized
