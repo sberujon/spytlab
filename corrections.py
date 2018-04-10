@@ -7,9 +7,10 @@ import EdfFile as edf
 
 
 
-def registerRefAndSample(ref,sample,precision):
+def registerRefAndSample(Ir,Is,precision):
+
     # correction of beam movementn
-    shifts, error, phasediff = register_translation(sample, ref, precision)
+    shifts, error, phasediff = register_translation(Is, Ir, precision)
     offset_image = fourier_shift(np.fft.fftn(ref), shifts)
     offset_image = np.fft.ifftn(offset_image)
     print ' the register correction shift is ( in pixels ) : '
@@ -17,24 +18,27 @@ def registerRefAndSample(ref,sample,precision):
     print ' ----------------------- registration correction done------------------------ '
     return offset_image.real
 
-# def errorDetection (Ir, Is):
-#     # correction of failed acquired  couple Ir and Is
+def errorDetection (Ir, Is):
+    # correction of failed acquired  couple Ir and Is
+    # Ir and Is are 3D array as [nbpoint,height,width] because openSeq return toReturn = np.zeros((len(filenames), height, width))
+    nbPoints,height,width=Ir.shape
+    print len(nbPoints)
+    pointsToDelete=[]
+    for coupleOfPopints in range (0,nbPoints):
+        sample=Is[coupleOfPopints,:,:]
+        reference = Ir[coupleOfPopints, :, :]
+        shifts, error, phasediff = registerRefAndSample(reference,sample, 1000)
+        if shifts[0]> 10 or shifts [1] >10:
+            pointsToDelete.append(coupleOfPopints)
+            print 'ERROR couple : deletion in progress '
 
-#     if shifts> 10
-#         Ir=IrError
-#         Is=IsError
-#         IrErrorOutputFileName = '/Users/helene/PycharmProjects/spytlab/output/IrError.edf'
-#         outputEdf = edf.EdfFile(IrErrorOutputFileName, access='wb+')
-#         outputEdf.WriteImage({}, correctedSample)
-#     else
-#         Ir=Ir
-#         IrGoodOutputFileName = '/Users/helene/PycharmProjects/spytlab/output/IrGood.edf'
-#         outputEdf = edf.EdfFile(IrGoodOutputFileName, access='wb+')
-#         outputEdf.WriteImage({}, Ir)
-#         Is=Is
-#         IsGoodOutputFileName = '/Users/helene/PycharmProjects/spytlab/output/IsGood.edf'
-#         outputEdf = edf.EdfFile(IsGoodOutputFileName, access='wb+')
-#         outputEdf.WriteImage({}, Is)
+    if (len(pointsToDelete)>0):
+        Ir=np.delete(Ir, pointsToDelete,axis=0)
+        Is = np.delete(Is, pointsToDelete, axis=0)
+
+    return Ir,Is
+
+
 
     print ' ----------------------- error detection correction done------------------------ '
 
@@ -42,15 +46,20 @@ def registerRefAndSample(ref,sample,precision):
 def normalization (Im, darkfield):
     # correction by flat or dark field
     #calculate mean and std of the image to be able to normalize
-    meanIm= np.mean(Im)
-    stdIm=np.std(Im)
+    nbslices, height, width = Im.shape
+    print len(nbslices)
+    slicesNormalized = []
+    for slice in range(0, nbslices):
+        meanSlice= np.mean(Im, axis=0)
+        stdSlice=np.std(Im, axis =0)
 
-    ImCorrected=(Im-meanIm)/stdIm
+        ImCorrected=(Im[slice,:,:]-meanSlice)/stdSlice
+        ImCorrected=ImCorrected-darkfield
+        slicesNormalized.append(ImCorrected)
+    Im=slicesNormalized
 
-    ImCorrected=ImCorrected-darkfield
-    Im=ImCorrected
     print '-----------------------  normalization correction done ----------------------- '
-    return Im.real
+    return Im
 
 
 if __name__ == "__main__":
