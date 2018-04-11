@@ -97,12 +97,12 @@ def LarkinAnissonSheppard(dx,dy,alpha =0 ,sigma=0):
     return phi
 
 
-def parseESRFTomoFolder(folderpath,outputFolder):
+def parseESRFTomoFolder(folderpath):
     print 'ESRFTomoFolder'
     scanName=os.path.basename(folderpath)
     parametersScanFilename=folderpath+'/'+scanName+'.xml'
     print parametersScanFilename
-    tomoExperiment=esrfTomo.FastTomoExperiment(parametersScanFilename,outputFolder)
+    tomoExperiment=esrfTomo.FastTomoExperiment(parametersScanFilename)
     print 'numberFlatField: '
     print tomoExperiment.numberFlatField
     tomoExperiment.createAverageWfandDf()
@@ -137,7 +137,7 @@ def processTomoFolder(projectionsF,referencesF,darkFieldF,outputFolder):
     Ir=spytIO.openImage(referencesF[0])
     darkField=spytIO.openImage(darkFieldF)
 
-    Ir = corr.normalization(Ir, darkField)
+    Ir = corr.normalization2D(Ir, darkField)
 
     dxFolder=outputFolder+'/dx/'
     dyFolder = outputFolder + '/dy/'
@@ -164,28 +164,29 @@ def processTomoFolder(projectionsF,referencesF,darkFieldF,outputFolder):
     for proj in projectionsF:
         print proj
         Is=spytIO.openImage(proj)
-        Is=corr.normalization(Is,darkField)
+        Is=corr.normalization2D(Is,darkField)
         result=processOneProjection(Is,Ir)
 
         dx = result['dx']
         dxFilename=dxFolder+'/dx_'+os.path.basename(proj)
-        spytIO.saveEdf(dx, dxFilename)
+        spytIO.saveEdf(dx.real, dxFilename)
 
         dy = result['dy']
-        dyFilename = dxFolder + '/dy_' + os.path.basename(proj)
-        spytIO.saveEdf(dy, dyFilename)
+        dyFilename = dyFolder + '/dy_' + os.path.basename(proj)
+        spytIO.saveEdf(dy.real, dyFilename)
 
         phi = result['phi']
         phiFilename = phiFolder + '/phi_' + os.path.basename(proj)
-        spytIO.saveEdf(phi, phiFilename)
+        spytIO.saveEdf(phi.real, phiFilename)
 
         phi2 = result['phi2']
         phi2Filename = phi2Folder + '/phi2_' + os.path.basename(proj)
-        spytIO.saveEdf(phi2, phi2Filename)
+        spytIO.saveEdf(phi2.real, phi2Filename)
 
         phi3 = result['phi3']
         phi3Filename = phi3Folder + '/phi3' + os.path.basename(proj)
-        spytIO.saveEdf(phi3, phi3Filename)
+        spytIO.saveEdf(phi3.real, phi3Filename)
+        print phi3Filename
 
 
 
@@ -195,7 +196,7 @@ def processTomoFolder(projectionsF,referencesF,darkFieldF,outputFolder):
 if __name__ == "__main__":
     inputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/Speckle_Foam1_52keV_6um_xss_bis_012_'
     outputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlow'
-    projectionsFileNames, referenceFileNames, darkFieldFilename= parseESRFTomoFolder(inputFolder,outputFolder)
+    projectionsFileNames, referenceFileNames, darkFieldFilename= parseESRFTomoFolder(inputFolder)
     processTomoFolder(projectionsFileNames, referenceFileNames, darkFieldFilename,outputFolder)
 
 

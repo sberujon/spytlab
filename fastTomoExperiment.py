@@ -8,10 +8,10 @@ import numpy as np
 
 
 class FastTomoExperiment:
-    def __init__(self, xmlFilename, output):
+    def __init__(self, xmlFilename):
         self.dirname = os.path.dirname(xmlFilename)
         self.projectionName = os.path.dirname(xmlFilename)
-        self.outputFolder = output
+        self.outputFolder = 'None'
         self.xmlfile = xmlFilename
         self.scanRange = 0
         self.numberOfProjections = 0
