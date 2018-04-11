@@ -105,15 +105,30 @@ def parseESRFTomoFolder(folderpath,outputFolder):
     tomoExperiment=esrfTomo.FastTomoExperiment(parametersScanFilename,outputFolder)
     print 'numberFlatField: '
     print tomoExperiment.numberFlatField
-    tomoExperiment.createAverageWfandDf()
+    #tomoExperiment.createAverageWfandDf()
     tomoExperiment.findCenterOfRotation()
     print 'Cor Found at '+str(tomoExperiment.cor)
     projectionsFileNames=tomoExperiment.getProjectionsName()
+    projectionsFileNames.sort()
     darkFieldFilename=tomoExperiment.darkOutputFile
     referenceFileNames= tomoExperiment.getReferencesFileNames()
-
+    referenceFileNames.sort()
     print referenceFileNames
+    return projectionsFileNames,referenceFileNames,darkFieldFilename
 
+
+
+def processOneProjection(Is,Ir):
+    sigma = 0.9
+    alpha = 0
+
+    dI = (Is - Ir * (np.mean(Is) / np.mean(Ir)))
+    dx, dy = derivativesByOpticalflow(Ir, dI, alpha=alpha, sig_scale=sigma)
+    phi = fc.frankotchellappa(dx, dy, False)
+    phi3 = kottler(dx, dy)
+    phi2 = LarkinAnissonSheppard(dx, dy)
+
+    return { 'dx': dx, 'dy': dy, 'phi': phi, 'phi2': phi2,'phi3': phi3}
 
 
 
@@ -131,25 +146,27 @@ if __name__ == "__main__":
     print 'Test One File'
     Ir=spytIO.openImage('ref1-1.edf')
     Is= spytIO.openImage('samp1-1.edf')
-    #offsett=corr.registerRefAndSample(Ir,Is,1000)
-    #print offsett
 
-
-    sigma=0.9
-    alpha=0
-
-    dI = (Is - Ir* (np.mean(Is)/np.mean(Ir)))
-    dx, dy = derivativesByOpticalflow(Ir, dI, alpha=alpha, sig_scale=sigma)
-    phi = fc.frankotchellappa(dx, dy, False)
-    phi3=kottler(dx,dy)
-
-    phi2=LarkinAnissonSheppard(dx,dy)
-
-    spytIO.saveEdf(dx.real,'output/dx.edf')
+    result=processOneProjection(Is,Ir)
+    dx = result['dx']
+    dy = result['dy']
+    phi = result['phi']
+    phi2 = result['phi2']
+    phi3 = result['phi3']
+    spytIO.saveEdf(dx, 'output/dx.edf')
     spytIO.saveEdf(dy.real, 'output/dy.edf')
     spytIO.saveEdf(phi.real, 'output/phi.edf')
     spytIO.saveEdf(phi2.real, 'output/phi2.edf')
     spytIO.saveEdf(phi3.real, 'output/phi3.edf')
+
+
+
+
+    #offsett=corr.registerRefAndSample(Ir,Is,1000)
+    #print offsett
+
+
+
 
 
 # open images
