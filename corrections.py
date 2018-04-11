@@ -63,6 +63,18 @@ def normalization (Im, darkfield):
     return Im
 
 
+def normalization2D (Im, darkfield):
+    # correction by flat or dark field
+    #calculate mean and std of the image to be able to normalize
+    meanSlice= np.mean(Im)
+    stdSlice=np.std(Im)
+    ImCorrected=(Im-meanSlice)/stdSlice
+    ImCorrected=ImCorrected-darkfield
+    print '-----------------------  normalization correction done ----------------------- '
+    return ImCorrected
+
+
+
 if __name__ == "__main__":
     print 'test corrections start'
 

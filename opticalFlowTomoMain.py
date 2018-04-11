@@ -105,7 +105,7 @@ def parseESRFTomoFolder(folderpath,outputFolder):
     tomoExperiment=esrfTomo.FastTomoExperiment(parametersScanFilename,outputFolder)
     print 'numberFlatField: '
     print tomoExperiment.numberFlatField
-    #tomoExperiment.createAverageWfandDf()
+    tomoExperiment.createAverageWfandDf()
     tomoExperiment.findCenterOfRotation()
     print 'Cor Found at '+str(tomoExperiment.cor)
     projectionsFileNames=tomoExperiment.getProjectionsName()
