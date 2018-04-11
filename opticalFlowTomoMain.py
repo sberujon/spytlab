@@ -128,8 +128,64 @@ def processOneProjection(Is,Ir):
     phi3 = kottler(dx, dy)
     phi2 = LarkinAnissonSheppard(dx, dy)
 
-    return { 'dx': dx, 'dy': dy, 'phi': phi, 'phi2': phi2,'phi3': phi3}
+    return {'dx': dx, 'dy': dy, 'phi': phi, 'phi2': phi2,'phi3': phi3}
 
+
+
+def processTomoFolder(projectionsF,referencesF,darkFieldF,outputFolder):
+    print 'Process Tomo'
+    Ir=spytIO.openImage(referencesF[0])
+    darkField=spytIO.openImage(darkFieldF)
+
+    Ir = corr.normalization(Ir, darkField)
+
+    dxFolder=outputFolder+'/dx/'
+    dyFolder = outputFolder + '/dy/'
+    phiFolder = outputFolder + '/phi/'
+    phi2Folder = outputFolder + '/phi2/'
+    phi3Folder = outputFolder + '/phi3/'
+
+    if not(os.path.exists(outputFolder)):
+        os.mkdir(outputFolder)
+
+    if not (os.path.exists(dxFolder)):
+        os.mkdir(dxFolder)
+    if not (os.path.exists(dyFolder)):
+        os.mkdir(dyFolder)
+    if not (os.path.exists(phiFolder)):
+        os.mkdir(phiFolder)
+    if not (os.path.exists(phi2Folder)):
+        os.mkdir(phi2Folder)
+    if not (os.path.exists(phi3Folder)):
+        os.mkdir(phi3Folder)
+
+
+
+    for proj in projectionsF:
+        print proj
+        Is=spytIO.openImage(proj)
+        Is=corr.normalization(Is,darkField)
+        result=processOneProjection(Is,Ir)
+
+        dx = result['dx']
+        dxFilename=dxFolder+'/dx_'+os.path.basename(proj)
+        spytIO.saveEdf(dx, dxFilename)
+
+        dy = result['dy']
+        dyFilename = dxFolder + '/dy_' + os.path.basename(proj)
+        spytIO.saveEdf(dy, dyFilename)
+
+        phi = result['phi']
+        phiFilename = phiFolder + '/phi_' + os.path.basename(proj)
+        spytIO.saveEdf(phi, phiFilename)
+
+        phi2 = result['phi2']
+        phi2Filename = phi2Folder + '/phi2_' + os.path.basename(proj)
+        spytIO.saveEdf(phi2, phi2Filename)
+
+        phi3 = result['phi3']
+        phi3Filename = phi3Folder + '/phi3' + os.path.basename(proj)
+        spytIO.saveEdf(phi3, phi3Filename)
 
 
 
@@ -139,13 +195,15 @@ def processOneProjection(Is,Ir):
 if __name__ == "__main__":
     inputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/Speckle_Foam1_52keV_6um_xss_bis_012_'
     outputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlow'
-    parseESRFTomoFolder(inputFolder,outputFolder)
+    projectionsFileNames, referenceFileNames, darkFieldFilename= parseESRFTomoFolder(inputFolder,outputFolder)
+    processTomoFolder(projectionsFileNames, referenceFileNames, darkFieldFilename,outputFolder)
 
 
     print ' Optical Flow Tomo '
     print 'Test One File'
     Ir=spytIO.openImage('ref1-1.edf')
     Is= spytIO.openImage('samp1-1.edf')
+
 
     result=processOneProjection(Is,Ir)
     dx = result['dx']
