@@ -250,6 +250,16 @@ class FastTomoExperiment:
         else:
             self.halfAcquisition = 0
 
+    def getProjectionsName(self):
+        projectionsFiles=glob.glob(self.dirname + '/' + self.scanName +'*.edf')
+        return projectionsFiles
+
+    def getReferencesFileNames(self):
+        referenceFileNames = glob.glob(self.dirname + '/refFor*' + '*.edf')
+        return referenceFileNames
+
+
+
 
     def printOut(self):
         print 'scanRangeFound ' + str(self.scanRange)

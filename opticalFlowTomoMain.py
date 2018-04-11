@@ -108,6 +108,11 @@ def parseESRFTomoFolder(folderpath,outputFolder):
     tomoExperiment.createAverageWfandDf()
     tomoExperiment.findCenterOfRotation()
     print 'Cor Found at '+str(tomoExperiment.cor)
+    projectionsFileNames=tomoExperiment.getProjectionsName()
+    darkFieldFilename=tomoExperiment.darkOutputFile
+    referenceFileNames= tomoExperiment.getReferencesFileNames()
+
+    print referenceFileNames
 
 
 
