@@ -49,18 +49,17 @@ def normalization (Im, darkfield):
     nbslices, height, width = Im.shape
     print len(nbslices)
     slicesNormalized = []
-    for slice in range(0, nbslices):
-        meanSlice= np.mean(Im, axis=0)
-        stdSlice=np.std(Im, axis =0)
+    meanSlice = np.mean(Im, axis=0)
+    stdSlice = np.std(Im, axis=0)
 
-        ImCorrected=(Im[slice,:,:]-meanSlice)/stdSlice
+    for slice in range(0, nbslices):
+        ImCorrected=(Im[slice,:,:]-meanSlice[slice])/stdSlice[slice]
 
         ImCorrected=ImCorrected-darkfield
         slicesNormalized.append(ImCorrected)
-    Im=slicesNormalized
 
     print '-----------------------  normalization correction done ----------------------- '
-    return Im
+    return slicesNormalized
 
 
 def normalization2D (Im, darkfield):
