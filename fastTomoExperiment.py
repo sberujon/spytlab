@@ -128,6 +128,7 @@ class FastTomoExperiment:
 
     def createAverageWfandDf(self):
         refBeg = glob.glob(self.dirname + '/ref*_0000.edf')
+        print refBeg
         if len(refBeg)>0:
             self.outputFileFFNameBeg = self.dirname + '/refForHST0000.edf'
             vBeg = Averager.Averager(refBeg, self.outputFileFFNameBeg, option=0)
@@ -158,6 +159,25 @@ class FastTomoExperiment:
         filetoWrite.WriteImage({}, data, Append=0, DataType='FloatValue')
 
         self.averageDone = True
+
+    def createAverageWfandDfPbm(self):
+        refBeg = glob.glob(self.dirname + '/RefA*.edf')
+        print refBeg
+        if len(refBeg)>0:
+            self.outputFileFFNameBeg = self.dirname + '/refForHST0000.edf'
+            vBeg = Averager.Averager(refBeg, self.outputFileFFNameBeg, option=0)
+
+        ref=edf.EdfFile(refBeg[0], access='r')
+        ref=ref.GetData(0)
+
+        self.darkOutputFile = self.dirname + '/darkForHST0000.edf'
+        data=np.ones(ref.shape)
+        filetoWrite = edf.EdfFile(self.darkOutputFile, access='wb+')
+        filetoWrite.WriteImage({}, data, Append=0, DataType='FloatValue')
+
+        self.averageDone = True
+
+
 
 
     def findCenterOfRotation(self):

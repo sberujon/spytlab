@@ -136,7 +136,6 @@ def processTomoFolder(projectionsF,referencesF,darkFieldF,outputFolder):
     print 'Process Tomo'
     Ir=spytIO.openImage(referencesF[0])
     darkField=spytIO.openImage(darkFieldF)
-
     Ir = corr.normalization2D(Ir, darkField)
 
     dxFolder=outputFolder+'/dx/'
@@ -165,27 +164,34 @@ def processTomoFolder(projectionsF,referencesF,darkFieldF,outputFolder):
         print proj
         Is=spytIO.openImage(proj)
         Is=corr.normalization2D(Is,darkField)
+
+        #Ir=corr.registerRefAndSample(Ir,Is,1000)
         result=processOneProjection(Is,Ir)
 
         dx = result['dx']
+        dx=np.asarray(dx.real,np.float32)
         dxFilename=dxFolder+'/dx_'+os.path.basename(proj)
-        spytIO.saveEdf(dx.real, dxFilename)
+        spytIO.saveEdf(dx, dxFilename)
 
         dy = result['dy']
+        dy = np.asarray(dy.real, np.float32)
         dyFilename = dyFolder + '/dy_' + os.path.basename(proj)
-        spytIO.saveEdf(dy.real, dyFilename)
+        spytIO.saveEdf(dy, dyFilename)
 
         phi = result['phi']
+        phi = np.asarray(phi.real, np.float32)
         phiFilename = phiFolder + '/phi_' + os.path.basename(proj)
-        spytIO.saveEdf(phi.real, phiFilename)
+        spytIO.saveEdf(phi, phiFilename)
 
         phi2 = result['phi2']
+        phi2 = np.asarray(phi2.real, np.float32)
         phi2Filename = phi2Folder + '/phi2_' + os.path.basename(proj)
-        spytIO.saveEdf(phi2.real, phi2Filename)
+        spytIO.saveEdf(phi2, phi2Filename)
 
         phi3 = result['phi3']
+        phi3 = np.asarray(phi3.real, np.float32)
         phi3Filename = phi3Folder + '/phi3' + os.path.basename(proj)
-        spytIO.saveEdf(phi3.real, phi3Filename)
+        spytIO.saveEdf(phi3, phi3Filename)
         print phi3Filename
 
 
@@ -194,8 +200,8 @@ def processTomoFolder(projectionsF,referencesF,darkFieldF,outputFolder):
 
 
 if __name__ == "__main__":
-    inputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/Speckle_Foam1_52keV_6um_xss_bis_012_'
-    outputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlow'
+    inputFolder='/Volumes/ID17/speckle/md1097/id17/SpeckleSacroIliaque/HA1100_sacroIlliaque_speckle_xss_6um_52kev__001__008_'
+    outputFolder='/Volumes/ID17/speckle/md1097/id17/SpeckleSacroIliaque/OuputSacro_Floor0_'
     projectionsFileNames, referenceFileNames, darkFieldFilename= parseESRFTomoFolder(inputFolder)
     processTomoFolder(projectionsFileNames, referenceFileNames, darkFieldFilename,outputFolder)
 
