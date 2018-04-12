@@ -54,27 +54,47 @@ def found_max(Im,max=-1000)
                 max=windowSize*i+j
             return max
 
-def calculateDisplacment(Ir,Is,window=1,step=1):
+def calculateDisplacment(Ir,Is,window=1,maxDisplacement=3,step=1):
     dI = (Is - Ir * (np.mean(Is) / np.mean(Ir)))
     windowSize=window*2+1
     nbslices, DimY, DimX = Im.shape
-    values = []
+
+
     #size of the ouput image will be reduced by the size of the interrogation window (no info on the edge)
-    ImOut=np.zeros((nbslices,DimY-windowSize, DimX-windowSize))
-    # window size crop:
-    cropIr=Ir[:,i-window:i+window, j-window:j+window]
-    cropIs=Is[:,i-window:i+window, j-window:j+window]
+    displacmentX = np.zeros((DimY, DimX))
+    displacmentY = np.zeros((DimY, DimX))
+
+
 
     # look through all the pixel positions
-    for oi in range (windowSize+1, DimY-windowSize,1):
-        for oj in  range (windowSize+1, DimY-windowSize,1):
+    for i in range (windowSize+1, DimY-windowSize,1):
+        for j in  range (windowSize+1, DimY-windowSize,1):
+            values=np.zeros((maxDisplacement,maxDisplacement))
+
+            # window size crop:
+            # IS dont move, track displacment on IR
+            cropIs = Is[:, i - window:i + window, j - window:j + window]
+
+            cropIr = Ir[:, i - window:i + window, j - window:j + window]
+
+            #  big displacment box
+            bigDisplacmentBox=Ir[:, i - maxDisplacement:i + maxDisplacement, j - maxDisplacement:j + maxDisplacement]
+
+            # calculate value in each pixel of  big displacment box for all the couple points
+            zncc
+            #append values tab
+            values.append
+
+
+
+
+
 
             # look on the neighbour pixels of the reference stack
             for j in  range (j-window:j+windowSize):
                for i in range (i - window: i + windowSize):
 
-                # look for the third dimension
-                    for k in enumerate (nbslices):
+
                     #calculation of the peak of correlaction with ZNCC
 #                         # ....... ie faire  zncc(Ir,Is,)
 
