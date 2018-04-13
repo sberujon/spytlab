@@ -63,7 +63,7 @@ def derivativesByOpticalflow(intensityImage,derivative,alpha=0,sig_scale=0):
 
 
 def kottler(dX,dY):
-    print 'kottler'
+    print('kottler')
     i = complex(0, 1)
     Nx, Ny = dX.shape
     dqx = 2 * pi / (Nx)
@@ -113,11 +113,11 @@ def processOneProjection(Is,Ir):
 
 
 def processProjectionSet(Is,Ir):
-    sigma = 0.9
+    sigma = 1
     alpha = 0
 
     subImage=Is-Ir
-    subImage=np.median(subImage,axis=0)
+    subImage=np.mean(subImage,axis=0)
 
     dI = (subImage * (np.mean(Is) / np.mean(Ir)))
     dx, dy = derivativesByOpticalflow(np.mean(Is,axis=0), dI, alpha=alpha, sig_scale=sigma)
@@ -156,8 +156,6 @@ if __name__ == "__main__":
 
     Ir3D=spytIO.openSeq(referencesFiles)
     Is3D = spytIO.openSeq(sampleFiles)
-    Ir3D=Ir3D[0:3,:,:]
-    Is3D = Is3D[0:3,:,:]
     result = processProjectionSet(Is3D, Ir3D)
 
     dx = result['dx']

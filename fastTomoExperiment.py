@@ -65,8 +65,7 @@ class FastTomoExperiment:
             self.setPaganin(ddict["paganinLength"])
 
         if (ddict["wholeStack"] == False):
-            print
-            self.setLineToReconstruct(int(ddict["startLine"]), int(ddict["endLine"]))
+            print(self.setLineToReconstruct(int(ddict["startLine"]), int(ddict["endLine"])))
 
         if (ddict["halfAcquisition"] == True):
             self.setHalfAcquisition(ddict["halfAcquiSide"])
@@ -128,7 +127,7 @@ class FastTomoExperiment:
 
     def createAverageWfandDf(self):
         refBeg = glob.glob(self.dirname + '/ref*_0000.edf')
-        print refBeg
+        print(refBeg)
         if len(refBeg)>0:
             self.outputFileFFNameBeg = self.dirname + '/refForHST0000.edf'
             vBeg = Averager.Averager(refBeg, self.outputFileFFNameBeg, option=0)
@@ -152,7 +151,7 @@ class FastTomoExperiment:
 
         darkFile = self.dirname + '/darkend0000.edf'
         data = edf.EdfFile(darkFile).GetData(0)
-        data /= self.numberOfDarkFields
+        data=np.divide(data,self.numberOfDarkFields)
         self.darkOutputFile = self.dirname + '/darkForHST0000.edf'
 
         filetoWrite = edf.EdfFile(self.darkOutputFile, access='wb+')
@@ -162,7 +161,7 @@ class FastTomoExperiment:
 
     def createAverageWfandDfPbm(self):
         refBeg = glob.glob(self.dirname + '/RefA*.edf')
-        print refBeg
+        print(refBeg)
         if len(refBeg)>0:
             self.outputFileFFNameBeg = self.dirname + '/refForHST0000.edf'
             vBeg = Averager.Averager(refBeg, self.outputFileFFNameBeg, option=0)
@@ -235,7 +234,7 @@ class FastTomoExperiment:
         if (self.scanRange ==180):
             self.cor = CenterOfRotation.findCorLudo(project0, project180, centralLine, numberOfLinesForAverage)
         else:
-            print '360 degree acquisition multiple cor calculations'
+            print('360 degree acquisition multiple cor calculations')
             self.cor = CenterOfRotation.findCorLudo(project0, project180, centralLine, numberOfLinesForAverage)
 
 
@@ -249,8 +248,7 @@ class FastTomoExperiment:
         condition = False
         while (condition == False):
             var = raw_input("Acquisition made in Half Tomography? (y,n) : ")
-            print
-            'You entered var :' + var
+            print('You entered var :' + var)
             if (var == "Y") or (var == "y") or (var == "N") or (var == "n"):
                 condition = True
 
@@ -282,15 +280,15 @@ class FastTomoExperiment:
 
 
     def printOut(self):
-        print 'scanRangeFound ' + str(self.scanRange)
-        print 'number of projection ' + str(self.numberOfProjections)
-        print 'projection 180  ' + str(self.projectionNumber180Degree)
-        print 'angular step is therefore ' + str(self.scanRange / self.numberOfProjections)
-        print 'Number of Dark Field : ' + str(self.numberOfDarkFields)
-        print 'Number of white Field : ' + str(self.numberFlatField)
-        print 'Width Of The Projections : ' + str(self.widthProjection)
-        print 'Height Of The Projections : ' + str(self.heightProjection)
-        print ' ref_on : ' + str(self.ref_on)
+        print('scanRangeFound ' + str(self.scanRange))
+        print('number of projection ' + str(self.numberOfProjections))
+        print('projection 180  ' + str(self.projectionNumber180Degree))
+        print('angular step is therefore ' + str(self.scanRange / self.numberOfProjections))
+        print ('Number of Dark Field : ' + str(self.numberOfDarkFields))
+        print ('Number of white Field : ' + str(self.numberFlatField))
+        print ('Width Of The Projections : ' + str(self.widthProjection))
+        print ('Height Of The Projections : ' + str(self.heightProjection))
+        print (' ref_on : ' + str(self.ref_on))
 
 
 
@@ -298,12 +296,12 @@ if __name__ == "__main__":
     framesDirectory = '/Volumes/ID17/map3/Papyrus/Blue_Banana_real/Blue_banana_real_70keV_037_'
     scanParameterFile = glob.glob(framesDirectory + '/*.xml')
     scanParameterFile.sort()
-    print scanParameterFile
+    print(scanParameterFile)
 
     tomoExp = FastTomoExperiment(scanParameterFile[0],'/')
     tomoExp.printOut()
     corFound=tomoExp.findCenterOfRotation()
-    print 'Cor Found at ' +str(corFound)
+    print ('Cor Found at ' +str(corFound))
 # print acquisitionNode
 
 

@@ -60,7 +60,7 @@ if __name__ == "__main__":
     filenames=glob.glob('*.edf')
     data=openImage(filename)
     savePNG(data,'ref.png',100,450)
-    print data.shape
+    print( data.shape)
 
 
     rootfolder = '/Volumes/VISITOR/md1097/id17/Phantoms/TwoDimensionalPhantom/GrilleFils/Absorption52keV/'
@@ -68,6 +68,6 @@ if __name__ == "__main__":
     sampleFilenames = glob.glob(rootfolder + 'Proj/*.edf')
     referencesFilenames.sort()
     sampleFilenames.sort()
-    print ' lalalal '
-    print referencesFilenames
-    print sampleFilenames
+    print(' lalalal ')
+    print (referencesFilenames)
+    print (sampleFilenames)

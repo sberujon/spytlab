@@ -29,7 +29,7 @@ def findCor(project0, project180, sizeBeamCor=20):
 
     CORpos = maxPos / sizeBeam
     #    CORpos=1024
-    print 'COR found at  ' + str(CORpos)
+    print('COR found at  ' + str(CORpos))
     return CORpos
 
 
@@ -116,27 +116,22 @@ def findCorNemoz(project0, project180, LineOfMaxEnergy, sizeBeamCor=20):
         interCorSubMatrix = np.zeros((65, 4095))
         taMereLaMatrice = project0
         for gem in np.arange(16, 1024, 16):
-            print
-            'gem' + str(gem)
+            print('gem' + str(gem))
             prj180 = project180[ii + beg, :]
             prj0 = np.ones(2048)
 
-            print
-            'A un momnet va falloir qu on comprenne ' + str(prj0[prj0 != 0].size)
+            print('A un momnet va falloir qu on comprenne ' + str(prj0[prj0 != 0].size))
 
             prj0 = taMereLaMatrice[ii + beg, :]
             # test = prj0[prj0!=0]
-            print
-            'Au tout debut ' + str(taMereLaMatrice[taMereLaMatrice != 0].size)
+            print('Au tout debut ' + str(taMereLaMatrice[taMereLaMatrice != 0].size))
 
-            print
-            'Alors que project0 fait ' + str(taMereLaMatrice.size)
+            print('Alors que project0 fait ' + str(taMereLaMatrice.size))
 
             plt.plot(prj0)
             prj0[gem:2048] = 0
 
-            print
-            'Apres la feinte ' + str(prj0[prj0 != 0].shape)
+            print('Apres la feinte ' + str(prj0[prj0 != 0].shape))
 
             hist180 = np.histogram(prj180, bins=400, range=None, normed=False, weights=None)
             cumSum180 = np.cumsum(hist180[0])
@@ -167,6 +162,6 @@ def findCorNemoz(project0, project180, LineOfMaxEnergy, sizeBeamCor=20):
     CORpos = np.true_divide(maxPos, SumCorr)
     CORpos /= 2.0
 
-    print "Find center of rotation at " + str(CORpos)
+    print( "Find center of rotation at " + str(CORpos))
     return CORpos
 

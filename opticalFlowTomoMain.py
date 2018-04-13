@@ -63,7 +63,7 @@ def derivativesByOpticalflow(intensityImage,derivative,alpha=0,sig_scale=0):
 
 
 def kottler(dX,dY):
-    print 'kottler'
+    print('kottler')
     i = complex(0, 1)
     Nx, Ny = dX.shape
     dqx = 2 * pi / (Nx)
@@ -98,22 +98,22 @@ def LarkinAnissonSheppard(dx,dy,alpha =0 ,sigma=0):
 
 
 def parseESRFTomoFolder(folderpath):
-    print 'ESRFTomoFolder'
+    print('ESRFTomoFolder')
     scanName=os.path.basename(folderpath)
     parametersScanFilename=folderpath+'/'+scanName+'.xml'
-    print parametersScanFilename
+    print(parametersScanFilename)
     tomoExperiment=esrfTomo.FastTomoExperiment(parametersScanFilename)
-    print 'numberFlatField: '
-    print tomoExperiment.numberFlatField
+    print('numberFlatField: ')
+    print(tomoExperiment.numberFlatField)
     tomoExperiment.createAverageWfandDf()
     tomoExperiment.findCenterOfRotation()
-    print 'Cor Found at '+str(tomoExperiment.cor)
+    print('Cor Found at '+str(tomoExperiment.cor))
     projectionsFileNames=tomoExperiment.getProjectionsName()
     projectionsFileNames.sort()
     darkFieldFilename=tomoExperiment.darkOutputFile
     referenceFileNames= tomoExperiment.getReferencesFileNames()
     referenceFileNames.sort()
-    print referenceFileNames
+    print(referenceFileNames)
     return projectionsFileNames,referenceFileNames,darkFieldFilename
 
 
@@ -133,7 +133,7 @@ def processOneProjection(Is,Ir):
 
 
 def processTomoFolder(projectionsF,referencesF,darkFieldF,outputFolder):
-    print 'Process Tomo'
+    print('Process Tomo')
     Ir=spytIO.openImage(referencesF[0])
     darkField=spytIO.openImage(darkFieldF)
     Ir = corr.normalization2D(Ir, darkField)
@@ -161,7 +161,7 @@ def processTomoFolder(projectionsF,referencesF,darkFieldF,outputFolder):
 
 
     for proj in projectionsF:
-        print proj
+        print(proj)
         Is=spytIO.openImage(proj)
         Is=corr.normalization2D(Is,darkField)
 
@@ -206,8 +206,8 @@ if __name__ == "__main__":
     processTomoFolder(projectionsFileNames, referenceFileNames, darkFieldFilename,outputFolder)
 
 
-    print ' Optical Flow Tomo '
-    print 'Test One File'
+    print(' Optical Flow Tomo ')
+    print('Test One File')
     Ir=spytIO.openImage('ref1-1.edf')
     Is= spytIO.openImage('samp1-1.edf')
 
