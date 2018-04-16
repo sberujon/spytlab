@@ -139,23 +139,16 @@ if __name__ == "__main__":
     app = qt.QApplication(sys.argv)
     #app.connect(app, qt.SIGNAL("lastWindowClosed()"), app, qt.SLOT("quit()"))
 
-    referenceFiles= str(qt.QFileDialog.getOpenFileNames(None, 'Open a set of Images', '/','Image files (*.edf *.tif *.tiff)'))
+    referenceFiles= (qt.QFileDialog.getOpenFileNames(None, 'Open a set of Images', '/','Image files (*.edf *.tif *.tiff)'))
+    directory=os.path.dirname(str(referenceFiles[0]))
     print referenceFiles[0]
-    directory=os.path.dirname(referenceFiles[0])
+    sampleFiles = (qt.QFileDialog.getOpenFileNames(None, 'Open a set of Images', directory,'Image files (*.edf *.tif *.tiff)'))
 
-    sampleFiles = str(qt.QFileDialog.getOpenFileNames(None, 'Open a set of Images', directory,'Image files (*.edf *.tif *.tiff)'))
+    saveFolder = (qt.QFileDialog.getExistingDirectory(None,'Open directory to save the images',directory ))
+    saveFolder=str(saveFolder)
 
-    saveFolder = str(qt.QFileDialog.getExistingDirectory(None,'Open directory to save the images',directory ))
-
-
-
-
-    #referencesFiles=glob.glob(referenceFolder+'*.tif')
-    #sampleFiles = glob.glob(sampleFolder + '*.tif')
-
-
-    Ir=spytIO.openImage(referenceFiles[0])
-    Is=spytIO.openImage(sampleFiles[0])
+    Ir=spytIO.openImage(str(referenceFiles[0]))
+    Is=spytIO.openImage(str(sampleFiles[0]))
     result=processOneProjection(Is,Ir)
 
     dx = result['dx']
@@ -170,7 +163,7 @@ if __name__ == "__main__":
     spytIO.saveEdf(phi3.real, saveFolder+'/phi3.edf')
 
 
-    Ir3D=spytIO.openSeq(referenceFiles)
+    Ir3D= spytIO.openSeq(referenceFiles)
     Is3D = spytIO.openSeq(sampleFiles)
     result = processProjectionSet(Is3D, Ir3D)
 
@@ -179,11 +172,11 @@ if __name__ == "__main__":
     phi = result['phi']
     phi2 = result['phi2']
     phi3 = result['phi3']
-    spytIO.saveEdf(dx, 'output/dx_3files.edf')
-    spytIO.saveEdf(dy.real, 'output/dy_3files.edf')
-    spytIO.saveEdf(phi.real, 'output/phi_3files.edf')
-    spytIO.saveEdf(phi2.real, 'output/phi2_3files.edf')
-    spytIO.saveEdf(phi3.real, 'output/phi3_3files.edf')
+    spytIO.saveEdf(dx, saveFolder + '/dx.edf')
+    spytIO.saveEdf(dy.real, saveFolder + '/dy.edf')
+    spytIO.saveEdf(phi.real, saveFolder + '/phi.edf')
+    spytIO.saveEdf(phi2.real, saveFolder + '/phi2.edf')
+    spytIO.saveEdf(phi3.real, saveFolder + '/phi3.edf')
 
     #offsett=corr.registerRefAndSample(Ir,Is,1000)
     #print offsett

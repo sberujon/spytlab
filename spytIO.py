@@ -13,6 +13,7 @@ from scipy.misc import imsave as imsave
 import glob
 
 def openImage(filename):
+    filename=str(filename)
     if filename.endswith('.edf'):
         im = edf.EdfFile(filename, access='rb')
         imarray = im.GetData(0)
@@ -25,12 +26,12 @@ def openImage(filename):
 
 def openSeq(filenames):
     if len(filenames) >0 :
-        data=openImage(filenames[0])
+        data=openImage(str(filenames[0]))
         height,width=data.shape
         toReturn = np.zeros((len(filenames), height, width))
         i=0
         for file in filenames:
-            data=openImage(file)
+            data=openImage(str(file))
             toReturn[i,:,:]=data
             i+=1
         return toReturn
