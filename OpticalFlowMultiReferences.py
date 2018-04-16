@@ -1,6 +1,7 @@
 import spytIO
 import glob
 import os
+import sys
 from numpy.fft import fftshift as fftshift
 from numpy.fft import ifftshift as ifftshift
 from numpy.fft import fft2 as fft2
@@ -10,6 +11,7 @@ from math import pi as pi
 from math import floor as floor
 
 import frankoChellappa as fc
+import spytlabQT as qt
 
 import numpy as np
 import corrections as corr
@@ -134,12 +136,26 @@ if __name__ == "__main__":
 
     referenceFolder= '/Users/embrun/Codes/specklematching/Experiments/MoucheSimapAout2017/ref/'
     sampleFolder = '/Users/embrun/Codes/specklematching/Experiments/MoucheSimapAout2017/sample/'
+    app = qt.QApplication(sys.argv)
+    #app.connect(app, qt.SIGNAL("lastWindowClosed()"), app, qt.SLOT("quit()"))
 
-    referencesFiles=glob.glob(referenceFolder+'*.tif')
-    sampleFiles = glob.glob(sampleFolder + '*.tif')
+    referenceFiles= str(qt.QFileDialog.getOpenFileNames(None, 'Open a set of Images', '/','Image files (*.edf *.tif *.tiff)'))
+    print referenceFiles[0]
+    directory=os.path.dirname(referenceFiles[0])
 
-    Ir=spytIO.openImage(referencesFiles[2])
-    Is=spytIO.openImage(sampleFiles[2])
+    sampleFiles = str(qt.QFileDialog.getOpenFileNames(None, 'Open a set of Images', directory,'Image files (*.edf *.tif *.tiff)'))
+
+    saveFolder = str(qt.QFileDialog.getExistingDirectory(None,'Open directory to save the images',directory ))
+
+
+
+
+    #referencesFiles=glob.glob(referenceFolder+'*.tif')
+    #sampleFiles = glob.glob(sampleFolder + '*.tif')
+
+
+    Ir=spytIO.openImage(referenceFiles[0])
+    Is=spytIO.openImage(sampleFiles[0])
     result=processOneProjection(Is,Ir)
 
     dx = result['dx']
@@ -147,14 +163,14 @@ if __name__ == "__main__":
     phi = result['phi']
     phi2 = result['phi2']
     phi3 = result['phi3']
-    spytIO.saveEdf(dx, 'output/dx.edf')
-    spytIO.saveEdf(dy.real, 'output/dy.edf')
-    spytIO.saveEdf(phi.real, 'output/phi.edf')
-    spytIO.saveEdf(phi2.real, 'output/phi2.edf')
-    spytIO.saveEdf(phi3.real, 'output/phi3.edf')
+    spytIO.saveEdf(dx, saveFolder+'/dx.edf')
+    spytIO.saveEdf(dy.real, saveFolder+'/dy.edf')
+    spytIO.saveEdf(phi.real, saveFolder+'/phi.edf')
+    spytIO.saveEdf(phi2.real, saveFolder+'/phi2.edf')
+    spytIO.saveEdf(phi3.real, saveFolder+'/phi3.edf')
 
 
-    Ir3D=spytIO.openSeq(referencesFiles)
+    Ir3D=spytIO.openSeq(referenceFiles)
     Is3D = spytIO.openSeq(sampleFiles)
     result = processProjectionSet(Is3D, Ir3D)
 

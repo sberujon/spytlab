@@ -75,7 +75,7 @@ def normalization2D (Im, darkfield):
 
 
 if __name__ == "__main__":
-    print 'test corrections start'
+    print('test corrections start')
 
 
 
