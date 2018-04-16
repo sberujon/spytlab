@@ -139,13 +139,17 @@ if __name__ == "__main__":
     app = qt.QApplication(sys.argv)
     #app.connect(app, qt.SIGNAL("lastWindowClosed()"), app, qt.SLOT("quit()"))
 
-    referenceFiles= (qt.QFileDialog.getOpenFileNames(None, 'Open a set of Images', '/','Image files (*.edf *.tif *.tiff)'))
+    referenceFiles= qt.QFileDialog.getOpenFileNames(None, 'Open a set of Images', '/','Image files (*.edf *.tif *.tiff)')
+
+    referenceFiles=referenceFiles[0]
     directory=os.path.dirname(str(referenceFiles[0]))
-    print referenceFiles[0]
+
     sampleFiles = (qt.QFileDialog.getOpenFileNames(None, 'Open a set of Images', directory,'Image files (*.edf *.tif *.tiff)'))
+    sampleFiles = sampleFiles[0]
 
     saveFolder = (qt.QFileDialog.getExistingDirectory(None,'Open directory to save the images',directory ))
     saveFolder=str(saveFolder)
+
 
     Ir=spytIO.openImage(str(referenceFiles[0]))
     Is=spytIO.openImage(str(sampleFiles[0]))
