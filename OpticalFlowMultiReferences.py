@@ -172,11 +172,11 @@ if __name__ == "__main__":
     phi = result['phi']
     phi2 = result['phi2']
     phi3 = result['phi3']
-    spytIO.saveEdf(dx, saveFolder + '/dx.edf')
-    spytIO.saveEdf(dy.real, saveFolder + '/dy.edf')
-    spytIO.saveEdf(phi.real, saveFolder + '/phi.edf')
-    spytIO.saveEdf(phi2.real, saveFolder + '/phi2.edf')
-    spytIO.saveEdf(phi3.real, saveFolder + '/phi3.edf')
+    spytIO.saveEdf(dx, saveFolder + '/dxAllFiles.edf')
+    spytIO.saveEdf(dy.real, saveFolder + '/dyAllFiles.edf')
+    spytIO.saveEdf(phi.real, saveFolder + '/phiAllFiles.edf')
+    spytIO.saveEdf(phi2.real, saveFolder + '/phi2AllFiles.edf')
+    spytIO.saveEdf(phi3.real, saveFolder + '/phi3AllFiles.edf')
 
     #offsett=corr.registerRefAndSample(Ir,Is,1000)
     #print offsett
