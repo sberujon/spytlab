@@ -62,6 +62,31 @@ def normalization (Im, darkfield):
     return slicesNormalized
 
 
+
+
+
+
+def normalizationMultipleDarkField (Im, darkfield):
+    # correction by flat or dark field
+    #calculate mean and std of the image to be able to normalize
+    nbslices, height, width = Im.shape
+    print (len(nbslices))
+    slicesNormalized = []
+    meanSlice = np.mean(Im, axis=0)
+    stdSlice = np.std(Im, axis=0)
+
+    for slice in range(0, nbslices):
+        ImCorrected=(Im[slice,:,:]-meanSlice[slice])/stdSlice[slice]
+
+        ImCorrected=ImCorrected-darkfield[slice]
+        slicesNormalized.append(ImCorrected)
+
+    print ('-----------------------  normalization correction done ----------------------- ')
+    return slicesNormalized
+
+
+
+
 def normalization2D (Im, darkfield):
     # correction by flat or dark field
     #calculate mean and std of the image to be able to normalize
