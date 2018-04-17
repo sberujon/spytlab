@@ -28,7 +28,7 @@ def openSeq(filenames):
     if len(filenames) >0 :
         data=openImage(str(filenames[0]))
         height,width=data.shape
-        toReturn = np.zeros((len(filenames), height, width))
+        toReturn = np.zeros((len(filenames), height, width),dtype=np.float32)
         i=0
         for file in filenames:
             data=openImage(str(file))
@@ -39,9 +39,19 @@ def openSeq(filenames):
 
 
 def saveEdf(data,filename):
-
+    print(filename)
     outputEdf = edf.EdfFile( filename, access='wb+')
     outputEdf.WriteImage({},data)
+
+
+def save3D_Edf(data,filename):
+    nbslices,height,width=data.shape
+    for i in range(nbslices):
+        textSlice='%4.4d'%i
+        dataToSave=data[i,:,:]
+        filenameSlice=filename+textSlice+'.edf'
+        saveEdf(dataToSave,filenameSlice)
+
 
 
 def savePNG(data,filename,min=0,max=0):

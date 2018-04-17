@@ -18,6 +18,42 @@ def registerRefAndSample(Ir,Is,precision):
     print (' ----------------------- registration correction done------------------------ ')
     return offset_image.real
 
+
+def getShift(Im1,Im2,precision=1000):
+    shifts, error, phasediff = register_translation(Im1, Im2, precision)
+    return shifts
+
+
+
+
+def registerImagesBetweenThemselves(im1, im2,sliceReference=0):
+    Is=im1.copy()
+    Ir= im2.copy()
+
+    refImage=Is[sliceReference,:,:]
+    nbSlices,height,width=Is.shape
+
+    for slice in (range(1,nbSlices)):
+        imageToMove=Is[slice,:,:]
+        shift=getShift(refImage,imageToMove,precision=1000)
+
+        if shift[0]>1:
+            shift[0]=0
+
+        print('Slice:'+str(slice)+'Shift:'+str(shift))
+        offset_image = fourier_shift(np.fft.fftn(imageToMove), shift)
+        offset_image = np.fft.ifftn(offset_image).real
+        Is[slice,:,:]=offset_image
+
+        refToMove=Ir[slice,:,:]
+        offset_image = fourier_shift(np.fft.fftn(refToMove), shift)
+        offset_image = np.fft.ifftn(offset_image).real
+        Ir[slice, :, :] = offset_image
+
+    return Is,Ir
+
+
+
 def errorDetection (Ir, Is):
     # correction of failed acquired  couple Ir and Is
     # Ir and Is are 3D array as [nbpoint,height,width] because openSeq return toReturn = np.zeros((len(filenames), height, width))
@@ -48,18 +84,16 @@ def normalization (Im, darkfield):
     #calculate mean and std of the image to be able to normalize
     nbslices, height, width = Im.shape
     print (len(nbslices))
-    slicesNormalized = []
     meanSlice = np.mean(Im, axis=0)
     stdSlice = np.std(Im, axis=0)
-
+    imCorrected = Im.copy()
     for slice in range(0, nbslices):
-        ImCorrected=(Im[slice,:,:]-meanSlice[slice])/stdSlice[slice]
-
-        ImCorrected=ImCorrected-darkfield
-        slicesNormalized.append(ImCorrected)
+        imCorrected[slice,:,:]=(imCorrected[slice,:,:]-meanSlice)/stdSlice
+        imCorrected[slice, :, :]= imCorrected[slice,:,:]-darkfield
 
     print ('-----------------------  normalization correction done ----------------------- ')
-    return slicesNormalized
+    return imCorrected
+
 
 
 
@@ -70,19 +104,20 @@ def normalizationMultipleDarkField (Im, darkfield):
     # correction by flat or dark field
     #calculate mean and std of the image to be able to normalize
     nbslices, height, width = Im.shape
-    print (nbslices)
-    slicesNormalized = []
     meanSlice = np.mean(Im, axis=0)
+    print('meanSlices')
+    print(meanSlice.shape)
     stdSlice = np.std(Im, axis=0)
-
+    imCorrected=Im.copy()
+    print('imCorrected')
+    print(imCorrected.shape)
     for slice in range(0, nbslices):
-        ImCorrected=(Im[slice,:,:]-meanSlice[slice])/stdSlice[slice]
-
-        ImCorrected=ImCorrected-darkfield[slice]
-        slicesNormalized.append(ImCorrected)
+        mean=np.mean(Im[slice,:,:])
+        imCorrected[slice,:,:]=(Im[slice,:,:]-(mean-meanSlice))#/stdSlice
+        imCorrected[slice,:,:]=imCorrected[slice,:,:]-darkfield[slice,:,:]
 
     print ('-----------------------  normalization correction done ----------------------- ')
-    return slicesNormalized
+    return imCorrected
 
 
 

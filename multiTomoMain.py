@@ -23,8 +23,20 @@ def processOneProjection(listOfDictionnaries,projectionNumber):
     print(projectionFiles)
 
     Is=spytIO.openSeq(projectionFiles)
+    print(Is.shape)
     Ir=spytIO.openSeq(referencesFiles)
+    print(Ir.shape)
     df=spytIO.openSeq(darkFieldFiles)
+    print(df.shape)
+
+    Is,Ir=corr.registerImagesBetweenThemselves(Is,Ir)
+
+    spytIO.save3D_Edf(Is,'/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo/Is/Is_')
+    spytIO.save3D_Edf(Ir,'/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo/Ir/Ir_')
+
+
+
+
     toReturn=OpticalFlow.processProjectionSetWithDarkFields(Is,Ir,df)
     return toReturn
 
@@ -55,7 +67,7 @@ def processAllFolders(listOfFolders,outputFolder):
 
     numberOfProjections=len(listOfDictionaries[0]['projections'])
     for projectionNumber in range (0,numberOfProjections):
-        projectionNumber=4
+        projectionNumber=0
         result=processOneProjection(listOfDictionaries,projectionNumber)
         textProj='%4.4d'%projectionNumber
 
@@ -82,14 +94,18 @@ def parseTomoFolderAndCreateRefFiles(folderpath):
     tomoExperiment=esrfTomo.FastTomoExperiment(parametersScanFilename)
     print('numberFlatField: ')
     print(tomoExperiment.numberFlatField)
+    referenceFileNames = tomoExperiment.getReferencesFileNames()
 
-    tomoExperiment.createAverageWfandDf()
-    tomoExperiment.findCenterOfRotation()
-    print('Cor Found at '+str(tomoExperiment.cor))
+    if referenceFileNames == None:
+        tomoExperiment.createAverageWfandDf()
+        tomoExperiment.findCenterOfRotation()
+        print('Cor Found at '+str(tomoExperiment.cor))
+        referenceFileNames = tomoExperiment.getReferencesFileNames()
+
     projectionsFileNames=tomoExperiment.getProjectionsName()
     projectionsFileNames.sort()
     darkFieldFilename=tomoExperiment.darkOutputFile
-    referenceFileNames= tomoExperiment.getReferencesFileNames()
+
     referenceFileNames.sort()
     print(referenceFileNames)
     ddict={}
@@ -104,7 +120,7 @@ def parseTomoFolderAndCreateRefFiles(folderpath):
 
 if __name__ == "__main__":
     inputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/'
-    outputFolder = '/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo'
+    outputFolder = '/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo/'
     tomoFolders=glob.glob(inputFolder+'Speckle_Foam1_52keV_6um_xss_bis*')
     tomoFolders.sort()
     processAllFolders(tomoFolders,outputFolder)

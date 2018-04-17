@@ -35,6 +35,7 @@ class FastTomoExperiment:
         self.nameExp='XXXX'
         self.machineCurrentStart=0
         self.machineCurrentStop=0
+        self.darkOutputFile = self.dirname + '/darkForHST0000.edf'
         self.xmldoc = minidom.parse(self.xmlfile)
         self.defineCorrectValues()
 
@@ -274,7 +275,10 @@ class FastTomoExperiment:
 
     def getReferencesFileNames(self):
         referenceFileNames = glob.glob(self.dirname + '/refFor*' + '*.edf')
-        return referenceFileNames
+        if len(referenceFileNames ):
+            return referenceFileNames
+        else :
+            return None
 
 
 
