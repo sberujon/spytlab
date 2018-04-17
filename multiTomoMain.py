@@ -6,6 +6,7 @@ import spytlabQT as qt
 import glob
 import os
 import spytIO
+import opticalThread
 
 
 
@@ -21,21 +22,15 @@ def processOneProjection(listOfDictionnaries,projectionNumber):
         referencesFiles.append(dict['references'][0])
         darkFieldFiles.append(dict['darkField'])
     print(projectionFiles)
-
     Is=spytIO.openSeq(projectionFiles)
     print(Is.shape)
     Ir=spytIO.openSeq(referencesFiles)
     print(Ir.shape)
     df=spytIO.openSeq(darkFieldFiles)
     print(df.shape)
-
     Is,Ir=corr.registerImagesBetweenThemselves(Is,Ir)
-
     spytIO.save3D_Edf(Is,'/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo/Is/Is_')
     spytIO.save3D_Edf(Ir,'/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo/Ir/Ir_')
-
-
-
 
     toReturn=OpticalFlow.processProjectionSetWithDarkFields(Is,Ir,df)
     return toReturn
@@ -67,7 +62,7 @@ def processAllFolders(listOfFolders,outputFolder):
 
     numberOfProjections=len(listOfDictionaries[0]['projections'])
     for projectionNumber in range (0,numberOfProjections):
-        projectionNumber=0
+        projectionNumber=1200
         result=processOneProjection(listOfDictionaries,projectionNumber)
         textProj='%4.4d'%projectionNumber
 
@@ -81,6 +76,46 @@ def processAllFolders(listOfFolders,outputFolder):
         spytIO.saveEdf(phi.real, phiFolder + '/phi'+textProj+'.edf')
         spytIO.saveEdf(phi2.real, phi2Folder + '/phi2'+textProj+'.edf')
         spytIO.saveEdf(phi3.real, phi3Folder + '/phi3'+textProj+'.edf')
+
+
+
+
+
+
+def processAllFoldersThreaded(listOfFolders,outputFolder,nbThread=4):
+    dxFolder = outputFolder + '/dx/'
+    dyFolder = outputFolder + '/dy/'
+    phiFolder = outputFolder + '/phi/'
+    phi2Folder = outputFolder + '/phi2/'
+    phi3Folder = outputFolder + '/phi3/'
+    createFolder(dxFolder)
+    createFolder(dyFolder)
+    createFolder(phiFolder)
+    createFolder(phi2Folder)
+    createFolder(phi3Folder)
+
+
+    listOfDictionaries=[]
+    for folder in listOfFolders:
+        ddict=parseTomoFolderAndCreateRefFiles(folder)
+        listOfDictionaries.append(ddict)
+
+    numberOfProjections=len(listOfDictionaries[0]['projections'])
+
+    listofThreads=[]
+    nbProjByThread=int(numberOfProjections/nbThread)
+    print('nbProjByThread'+str(nbProjByThread))
+    for i in range(nbThread):
+        listOfProjections=(np.arange(i*nbProjByThread,(i+1)*nbProjByThread))
+        myThread=opticalThread.OpticalFlowSolver(listOfDictionaries,listOfProjections,outputFolder)
+        listofThreads.append(myThread)
+
+    for i in range(nbThread):
+        listofThreads[i].start()
+
+    for i in range(nbThread):
+        listofThreads[i].join()
+
 
 
 
@@ -123,7 +158,7 @@ if __name__ == "__main__":
     outputFolder = '/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo/'
     tomoFolders=glob.glob(inputFolder+'Speckle_Foam1_52keV_6um_xss_bis*')
     tomoFolders.sort()
-    processAllFolders(tomoFolders,outputFolder)
+    processAllFoldersThreaded(tomoFolders,outputFolder)
 
     #result=parseTomoFolderAndCreateRefFiles(tomoFolders[0])
     #print result

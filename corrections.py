@@ -1,4 +1,5 @@
 from skimage.feature import register_translation
+from scipy.ndimage import gaussian_filter
 from scipy.ndimage import fourier_shift
 import numpy as np
 import spytIO
@@ -33,22 +34,23 @@ def registerImagesBetweenThemselves(im1, im2,sliceReference=0):
     refImage=Is[sliceReference,:,:]
     nbSlices,height,width=Is.shape
 
-    for slice in (range(1,nbSlices)):
-        imageToMove=Is[slice,:,:]
-        shift=getShift(refImage,imageToMove,precision=1000)
+    for slice in (range(0,nbSlices)):
+        if slice != sliceReference:
+            imageToMove=Is[slice,:,:]
+            shift=getShift(refImage,imageToMove,precision=1000)
 
-        if shift[0]>1:
-            shift[0]=0
+            if shift[0]>1:
+                shift[0]=0
 
-        print('Slice:'+str(slice)+'Shift:'+str(shift))
-        offset_image = fourier_shift(np.fft.fftn(imageToMove), shift)
-        offset_image = np.fft.ifftn(offset_image).real
-        Is[slice,:,:]=offset_image
+            print('Slice:'+str(slice)+'Shift:'+str(shift))
+            offset_image = fourier_shift(np.fft.fftn(imageToMove), shift)
+            offset_image = np.fft.ifftn(offset_image).real
+            Is[slice,:,:]=offset_image
 
-        refToMove=Ir[slice,:,:]
-        offset_image = fourier_shift(np.fft.fftn(refToMove), shift)
-        offset_image = np.fft.ifftn(offset_image).real
-        Ir[slice, :, :] = offset_image
+            refToMove=Ir[slice,:,:]
+            offset_image = fourier_shift(np.fft.fftn(refToMove), shift)
+            offset_image = np.fft.ifftn(offset_image).real
+            Ir[slice, :, :] = offset_image
 
     return Is,Ir
 
@@ -104,17 +106,14 @@ def normalizationMultipleDarkField (Im, darkfield):
     # correction by flat or dark field
     #calculate mean and std of the image to be able to normalize
     nbslices, height, width = Im.shape
-    meanSlice = np.mean(Im, axis=0)
-    print('meanSlices')
-    print(meanSlice.shape)
-    stdSlice = np.std(Im, axis=0)
+    #meanSlice = np.mean(Im, axis=0)
+    #meanSlice=gaussian_filter(meanSlice,sigma=50)
+    #stdSlice = np.std(Im, axis=0)
     imCorrected=Im.copy()
-    print('imCorrected')
-    print(imCorrected.shape)
+
     for slice in range(0, nbslices):
-        mean=np.mean(Im[slice,:,:])
-        imCorrected[slice,:,:]=(Im[slice,:,:]-(mean-meanSlice))#/stdSlice
-        imCorrected[slice,:,:]=imCorrected[slice,:,:]-darkfield[slice,:,:]
+        #imCorrected[slice,:,:]=(Im[slice,:,:]-(meanSlice))#/stdSlice
+        imCorrected[slice,:,:]=(imCorrected[slice,:,:]-darkfield[slice,:,:])#/(meanSlice -darkfield[slice,:,:])
 
     print ('-----------------------  normalization correction done ----------------------- ')
     return imCorrected

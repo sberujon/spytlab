@@ -117,14 +117,8 @@ def processProjectionSetWithDarkFields(Is,Ir,dark):
     sigma = 1
     alpha = 0
 
-    #Is=corrections.normalizationMultipleDarkField(Is,dark)
-    #Ir=corrections.normalizationMultipleDarkField(Ir, dark)
-    print('after Correction')
-    print(Is.shape)
-    print(Ir.shape)
-
-
-
+    Is=corrections.normalizationMultipleDarkField(Is,dark)
+    Ir=corrections.normalizationMultipleDarkField(Ir,dark)
 
     subImage=Is-Ir
     subImage=np.median(subImage,axis=0)
