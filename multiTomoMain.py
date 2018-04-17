@@ -21,7 +21,11 @@ def processOneProjection(listOfDictionnaries,projectionNumber):
         referencesFiles.append(dict['references'][0])
         darkFieldFiles.append(dict['darkField'])
     print(projectionFiles)
-    toReturn=OpticalFlow.processProjectionSetWithDarkFields(projectionFiles,referencesFiles,darkFieldFiles)
+
+    Is=spytIO.openSeq(projectionFiles)
+    Ir=spytIO.openSeq(referencesFiles)
+    df=spytIO.openSeq(darkFieldFiles)
+    toReturn=OpticalFlow.processProjectionSetWithDarkFields(Is,Ir,df)
     return toReturn
 
 
@@ -79,12 +83,12 @@ def parseTomoFolderAndCreateRefFiles(folderpath):
     print('numberFlatField: ')
     print(tomoExperiment.numberFlatField)
 
-    #tomoExperiment.createAverageWfandDf()
-    #tomoExperiment.findCenterOfRotation()
+    tomoExperiment.createAverageWfandDf()
+    tomoExperiment.findCenterOfRotation()
     print('Cor Found at '+str(tomoExperiment.cor))
     projectionsFileNames=tomoExperiment.getProjectionsName()
     projectionsFileNames.sort()
-    darkFieldFilename='Bidon'#tomoExperiment.darkOutputFile
+    darkFieldFilename=tomoExperiment.darkOutputFile
     referenceFileNames= tomoExperiment.getReferencesFileNames()
     referenceFileNames.sort()
     print(referenceFileNames)
@@ -100,9 +104,10 @@ def parseTomoFolderAndCreateRefFiles(folderpath):
 
 if __name__ == "__main__":
     inputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/'
+    outputFolder = '/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo'
     tomoFolders=glob.glob(inputFolder+'Speckle_Foam1_52keV_6um_xss_bis*')
     tomoFolders.sort()
-    processAllFolders(tomoFolders)
+    processAllFolders(tomoFolders,outputFolder)
 
     #result=parseTomoFolderAndCreateRefFiles(tomoFolders[0])
     #print result

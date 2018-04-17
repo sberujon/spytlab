@@ -18,9 +18,6 @@ import numpy as np
 import fastTomoExperiment as esrfTomo
 
 
-
-
-
 def derivativesByOpticalflow(intensityImage,derivative,alpha=0,sig_scale=0):
 
     Nx, Ny = derivative.shape
