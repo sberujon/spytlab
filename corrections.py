@@ -70,7 +70,7 @@ def normalizationMultipleDarkField (Im, darkfield):
     # correction by flat or dark field
     #calculate mean and std of the image to be able to normalize
     nbslices, height, width = Im.shape
-    print (len(nbslices))
+    print (nbslices)
     slicesNormalized = []
     meanSlice = np.mean(Im, axis=0)
     stdSlice = np.std(Im, axis=0)
