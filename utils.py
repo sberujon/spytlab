@@ -17,6 +17,7 @@ def generateArrayOfNumbers(nbPoints,deb,end):
 
     return listOfPoint
 
+
 def spytMkDir(folder):
     if not (os.path.exists(folder)):
         os.mkdir(folder)
