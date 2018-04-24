@@ -44,7 +44,7 @@ def makeDarkMean(Darkfiedls):
 
     nbslices, height, width = Darkfiedls.shape
     meanSlice = np.mean(Darkfiedls, axis=0)
-    print ('-----------------------  mean Dark calculation done ----------------------- ')
+    print ('-----------------------  mean Dark calculation done ------------------------- ')
     OutputFileName = '/Users/helene/PycharmProjects/spytlab/meanDarkTest.edf'
     outputEdf = edf.EdfFile(OutputFileName, access='wb+')
     outputEdf.WriteImage({}, meanSlice)
