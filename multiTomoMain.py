@@ -7,6 +7,7 @@ import glob
 import os
 import spytIO
 import opticalThread
+from  utils import spytMkDir as mkdir
 
 
 
@@ -37,22 +38,17 @@ def processOneProjection(listOfDictionnaries,projectionNumber):
 
 
 
-
-def createFolder(folder):
-    if not (os.path.exists(folder)):
-        os.mkdir(folder)
-
 def processAllFolders(listOfFolders,outputFolder):
     dxFolder = outputFolder + '/dx/'
     dyFolder = outputFolder + '/dy/'
     phiFolder = outputFolder + '/phi/'
     phi2Folder = outputFolder + '/phi2/'
     phi3Folder = outputFolder + '/phi3/'
-    createFolder(dxFolder)
-    createFolder(dyFolder)
-    createFolder(phiFolder)
-    createFolder(phi2Folder)
-    createFolder(phi3Folder)
+    mkdir(dxFolder)
+    mkdir(dyFolder)
+    mkdir(phiFolder)
+    mkdir(phi2Folder)
+    mkdir(phi3Folder)
 
 
     listOfDictionaries=[]
@@ -88,11 +84,11 @@ def processAllFoldersThreaded(listOfFolders,outputFolder,nbThread=4):
     phiFolder = outputFolder + '/phi/'
     phi2Folder = outputFolder + '/phi2/'
     phi3Folder = outputFolder + '/phi3/'
-    createFolder(dxFolder)
-    createFolder(dyFolder)
-    createFolder(phiFolder)
-    createFolder(phi2Folder)
-    createFolder(phi3Folder)
+    mkdir(dxFolder)
+    mkdir(dyFolder)
+    mkdir(phiFolder)
+    mkdir(phi2Folder)
+    mkdir(phi3Folder)
 
 
     listOfDictionaries=[]
