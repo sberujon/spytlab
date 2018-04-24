@@ -40,8 +40,9 @@ def openSeq(filenames):
 
 def saveEdf(data,filename):
     print(filename)
+    dataToStore=np.asarray(data,np.float32)
     outputEdf = edf.EdfFile( filename, access='wb+')
-    outputEdf.WriteImage({},data)
+    outputEdf.WriteImage({},dataToStore)
 
 
 def save3D_Edf(data,filename):
