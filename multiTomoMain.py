@@ -140,8 +140,8 @@ def parseTomoFolderAndCreateRefFiles(folderpath):
 
     projectionsFileNames=tomoExperiment.getProjectionsName()
     projectionsFileNames.sort()
-    darkFieldFilename=tomoExperiment.darkOutputFile
-
+    darkFieldFilename=tomoExperiment.getDarkFilename()
+    print(darkFieldFilename)
     referenceFileNames.sort()
     print(referenceFileNames)
     ddict={}
@@ -161,11 +161,12 @@ def parseTomoFolderAndCreateRefFiles(folderpath):
 
 
 if __name__ == "__main__":
-    inputFolder='/Volumes/ID17/broncho/IHR_April2018/CigaleNuit/'
-    outputFolder = '/Volumes/ID17/broncho/IHR_April2018/CigaleNuit/OpticalFlowTest26Apr/'
+    inputFolder='/Volumes/ID17/broncho/IHR_April2018/'
+    outputFolder = '/Volumes/ID17/broncho/IHR_April2018/OpticalFlowPatte21Test26Apr/'
     mkdir(outputFolder)
-    tomoFolders=glob.glob(inputFolder+'HA1000_Cigale_3um_gap90_75_Speckle*')
+    tomoFolders=glob.glob(inputFolder+'HA800_Patte21_3um_Gap90_75_Speckl*')
     tomoFolders.sort()
+    print(tomoFolders)
     processAllFoldersThreaded(tomoFolders,outputFolder,nbThread=1)
 
     #result=parseTomoFolderAndCreateRefFiles(tomoFolders[0])

@@ -128,7 +128,7 @@ class FastTomoExperiment:
 
     def createAverageWfandDf(self):
 
-        if (os.path.exists(self.dirname +'refHST0000.edf')) :
+        if (os.path.exists(self.dirname +'/refHST0000.edf')) :
             refBeg = glob.glob(self.dirname + '/ref*_0000.edf')
             print(refBeg)
             if len(refBeg)>0:
@@ -276,11 +276,21 @@ class FastTomoExperiment:
             self.halfAcquisition = 0
 
     def getProjectionsName(self):
+        print('Ici')
+        print(self.dirname)
         projectionsFiles=glob.glob(self.dirname + '/' + self.scanName +'*.edf')
+        print(projectionsFiles)
         return projectionsFiles
 
+    def getDarkFilename(self):
+        if (os.path.exists(self.dirname + '/refHST0000.edf')):
+            self.darkOutputFile = self.dirname + '/dark.edf'
+        else:
+            self.darkOutputFile = self.dirname + '/darkForHST0000.edf'
+        return self.darkOutputFile
+
     def getReferencesFileNames(self):
-        referenceFileNames = glob.glob(self.dirname + '/refFor*' + '*.edf')
+        referenceFileNames = glob.glob(self.dirname + '/ref*HST' + '*.edf')
         if len(referenceFileNames ):
             return referenceFileNames
         else :
