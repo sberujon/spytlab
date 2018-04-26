@@ -22,6 +22,7 @@ def processOneProjection(listOfDictionnaries,projectionNumber):
         projectionFiles.append(dict['projections'][projectionNumber])
         referencesFiles.append(dict['references'][0])
         darkFieldFiles.append(dict['darkField'])
+
     print(projectionFiles)
     Is=spytIO.openSeq(projectionFiles)
     print(Is.shape)
@@ -29,7 +30,7 @@ def processOneProjection(listOfDictionnaries,projectionNumber):
     print(Ir.shape)
     df=spytIO.openSeq(darkFieldFiles)
     print(df.shape)
-    Is,Ir=corr.registerImagesBetweenThemselves(Is,Ir)
+    #Is,Ir=corr.registerImagesBetweenThemselves(Is,Ir)
     spytIO.save3D_Edf(Is,'/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo/Is/Is_')
     spytIO.save3D_Edf(Ir,'/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo/Ir/Ir_')
 
@@ -153,12 +154,19 @@ def parseTomoFolderAndCreateRefFiles(folderpath):
 
 
 
+
+
+
+
+
+
 if __name__ == "__main__":
-    inputFolder='/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/'
-    outputFolder = '/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowMultiTomo/'
-    tomoFolders=glob.glob(inputFolder+'Speckle_Foam1_52keV_6um_xss_bis*')
+    inputFolder='/Volumes/ID17/broncho/IHR_April2018/CigaleNuit/'
+    outputFolder = '/Volumes/ID17/broncho/IHR_April2018/CigaleNuit/OpticalFlowTest26Apr/'
+    mkdir(outputFolder)
+    tomoFolders=glob.glob(inputFolder+'HA1000_Cigale_3um_gap90_75_Speckle*')
     tomoFolders.sort()
-    processAllFoldersThreaded(tomoFolders,outputFolder)
+    processAllFoldersThreaded(tomoFolders,outputFolder,nbThread=1)
 
     #result=parseTomoFolderAndCreateRefFiles(tomoFolders[0])
     #print result

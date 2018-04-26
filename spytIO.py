@@ -100,7 +100,7 @@ if __name__ == "__main__":
     rootfolder = '/Volumes/ID17/broncho/IHR_April2018/darkField_copy/'
     DarkFilenames = glob.glob(rootfolder + '*.edf')
     DarkFilenames.sort()
-    print DarkFilenames
+
 
     DarkFiles = openSeq(DarkFilenames)
     print  ('lalala')
