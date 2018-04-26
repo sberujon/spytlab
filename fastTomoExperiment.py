@@ -127,36 +127,42 @@ class FastTomoExperiment:
 
 
     def createAverageWfandDf(self):
-        refBeg = glob.glob(self.dirname + '/ref*_0000.edf')
-        print(refBeg)
-        if len(refBeg)>0:
-            self.outputFileFFNameBeg = self.dirname + '/refForHST0000.edf'
-            vBeg = Averager.Averager(refBeg, self.outputFileFFNameBeg, option=0)
 
-        if(self.ref_on<self.numberOfProjections):
-            cpt=self.ref_on
-            while cpt<self.numberOfProjections:
-                textref = '%4.4d' % cpt
-                refBeg = glob.glob(self.dirname + '/ref*_' + textref + '.edf')
-
-                if len(refBeg>0):
-                    self.outputFileNameFFEnd = self.dirname + '/refForHST' + textref + '.edf'
-                    vBeg = Averager.Averager(refBeg, self.outputFileNameFFEnd, option=1)
-                cpt+=self.ref_on
-        else:
-            textref = '%4.4d' % self.ref_on
-            refBeg = glob.glob(self.dirname + '/ref*_' + textref + '.edf')
+        if (os.path.exists(self.dirname +'refHST0000.edf')) :
+            refBeg = glob.glob(self.dirname + '/ref*_0000.edf')
+            print(refBeg)
             if len(refBeg)>0:
-                self.outputFileNameFFEnd = self.dirname + '/refForHST' + textref + '.edf'
-                vBeg = Averager.Averager(refBeg, self.outputFileNameFFEnd, option=0)
+                self.outputFileFFNameBeg = self.dirname + '/refForHST0000.edf'
+                vBeg = Averager.Averager(refBeg, self.outputFileFFNameBeg, option=0)
 
-        darkFile = self.dirname + '/darkend0000.edf'
-        data = edf.EdfFile(darkFile).GetData(0)
-        data=np.divide(data,self.numberOfDarkFields)
-        self.darkOutputFile = self.dirname + '/darkForHST0000.edf'
+            if(self.ref_on<self.numberOfProjections):
+                cpt=self.ref_on
+                while cpt<self.numberOfProjections:
+                    textref = '%4.4d' % cpt
+                    refBeg = glob.glob(self.dirname + '/ref*_' + textref + '.edf')
 
-        filetoWrite = edf.EdfFile(self.darkOutputFile, access='wb+')
-        filetoWrite.WriteImage({}, data, Append=0, DataType='FloatValue')
+                    if len(refBeg>0):
+                        self.outputFileNameFFEnd = self.dirname + '/refForHST' + textref + '.edf'
+                        vBeg = Averager.Averager(refBeg, self.outputFileNameFFEnd, option=1)
+                    cpt+=self.ref_on
+            else:
+                textref = '%4.4d' % self.ref_on
+                refBeg = glob.glob(self.dirname + '/ref*_' + textref + '.edf')
+                if len(refBeg)>0:
+                    self.outputFileNameFFEnd = self.dirname + '/refForHST' + textref + '.edf'
+                    vBeg = Averager.Averager(refBeg, self.outputFileNameFFEnd, option=0)
+
+            darkFile = self.dirname + '/darkend0000.edf'
+            data = edf.EdfFile(darkFile).GetData(0)
+            data=np.divide(data,self.numberOfDarkFields)
+            self.darkOutputFile = self.dirname + '/darkForHST0000.edf'
+
+            filetoWrite = edf.EdfFile(self.darkOutputFile, access='wb+')
+            filetoWrite.WriteImage({}, data, Append=0, DataType='FloatValue')
+        else:
+            self.outputFileFFNameBeg = self.dirname + '/refHST0000.edf'
+            self.outputFileNameFFEnd = self.dirname + '/refHST0000.edf'
+            self.darkOutputFile = self.dirname + '/dark.edf'
 
         self.averageDone = True
 
