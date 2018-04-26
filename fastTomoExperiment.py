@@ -128,7 +128,8 @@ class FastTomoExperiment:
 
     def createAverageWfandDf(self):
 
-        if (os.path.exists(self.dirname +'/refHST0000.edf')) :
+        if not(os.path.exists(self.dirname +'/refHST0000.edf')) :
+            print('NO REF ')
             refBeg = glob.glob(self.dirname + '/ref*_0000.edf')
             print(refBeg)
             if len(refBeg)>0:

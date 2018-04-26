@@ -164,7 +164,7 @@ if __name__ == "__main__":
     inputFolder='/Volumes/ID17/broncho/IHR_April2018/'
     outputFolder = '/Volumes/ID17/broncho/IHR_April2018/OpticalFlowPatte21Test26Apr/'
     mkdir(outputFolder)
-    tomoFolders=glob.glob(inputFolder+'HA800_Patte21_3um_Gap90_75_Speckl*')
+    tomoFolders=glob.glob(inputFolder+'HA800_zebra2_3um_Gap90_75_Speck01*')
     tomoFolders.sort()
     print(tomoFolders)
     processAllFoldersThreaded(tomoFolders,outputFolder,nbThread=1)
