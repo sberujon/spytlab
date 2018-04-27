@@ -53,9 +53,9 @@ def makeDarkMean(Darkfiedls):
 
 def saveEdf(data,filename):
     print(filename)
-    dataToStore=np.asarray(data,np.float32)
+    #dataToStore=data.astype(np.float)
     outputEdf = edf.EdfFile( filename, access='wb+')
-    outputEdf.WriteImage({},dataToStore)
+    outputEdf.WriteImage({},data)
 
 
 def save3D_Edf(data,filename):
@@ -97,13 +97,12 @@ if __name__ == "__main__":
     # print (referencesFilenames)
     # print (sampleFilenames)
 
-    rootfolder = '/Volumes/ID17/broncho/IHR_April2018/darkField_copy/'
-    DarkFilenames = glob.glob(rootfolder + '*.edf')
-    DarkFilenames.sort()
-
-
-    DarkFiles = openSeq(DarkFilenames)
-    print  ('lalala')
-
-    makeDarkMean(DarkFiles,outputDarkmean)
+    inputImageFilename = '/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlow/dx32/dx_Speckle_Foam1_52keV_6um_xss_bis_012_0000.edf'
+    data=openImage(inputImageFilename)
+    print(data.dtype)
+    print(data)
+    outputImageFilename = '/Volumes/ID17/speckle/md1097/id17/Phantoms/ThreeDimensionalPhantom/OpticalFlowTest26Apr/dx0001_32bit.edf'
+    saveEdf(data,outputImageFilename)
+    print(data)
+    print('At the end '+str(data.dtype))
 
