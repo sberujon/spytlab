@@ -16,7 +16,7 @@ import corrections
 
 import numpy as np
 import fastTomoExperiment as esrfTomo
-
+# the main
 
 def derivativesByOpticalflow(intensityImage,derivative,alpha=0,sig_scale=0):
 
@@ -61,7 +61,7 @@ def derivativesByOpticalflow(intensityImage,derivative,alpha=0,sig_scale=0):
 
 
 
-def kottler(dX,dY):
+def RL_LAS(dX,dY):
     print('kottler')
     i = complex(0, 1)
     Nx, Ny = dX.shape
@@ -144,7 +144,7 @@ def processProjectionSet(Is,Ir):
     dI = (subImage * (np.mean(Is) / np.mean(Ir)))
     dx, dy = derivativesByOpticalflow(np.mean(Ir,axis=0), dI, alpha=alpha, sig_scale=sigma)
     phi = fc.frankotchellappa(dx, dy, False)
-    phi3 = kottler(dx, dy)
+    phi3 = RL_LAS(dx, dy)
     phi2 = LarkinAnissonSheppard(dx, dy)
 
     return {'dx': dx, 'dy': dy, 'phi': phi, 'phi2': phi2,'phi3': phi3}
